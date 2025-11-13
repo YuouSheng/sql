@@ -45,8 +45,14 @@ There are several tools online you can use, I'd recommend [Draw.io](https://www.
 
 **HINT:** You do not need to create any data for this prompt. This is a conceptual model only. 
 
+
+
 #### Prompt 2
 We want to create employee shifts, splitting up the day into morning and evening. Add this to the ERD.
+
+
+
+
 
 #### Prompt 3
 The store wants to keep customer addresses. Propose two architectures for the CUSTOMER_ADDRESS table, one that will retain changes, and another that will overwrite. Which is type 1, which is type 2? 
@@ -56,6 +62,47 @@ The store wants to keep customer addresses. Propose two architectures for the CU
 ```
 Your answer...
 ```
+
+#### Prompt 1
+
+This ERD shows a small bookstore with key entities for employees, customers, books, orders, sales, and dates.  
+Orders link customers and employees, and each order can include multiple books through the sales table.  
+The date table supports both order tracking and employee hire dates for analysis.
+
+
+#### Prompt 2
+
+
+This ERD extends the base model with a shift system.  
+A new Shift table defines morning and evening shifts, and an Employee_Shift_Assignment table connects each employee to a shift and date.  
+This design allows flexible daily scheduling while keeping employee and shift data normalized.
+
+
+#### Prompt 3
+
+The store wants to keep customer addresses. There are two possible architectures depending on whether we overwrite or retain historical addresses.
+
+Option 1 – Overwrite current address (Type 1 Slowly Changing Dimension)**  
+This design keeps only the customer’s current address. When a customer moves, the record is updated in place.  
+- Example table:
+  - `customer_id`, `street`, `city`, `region`, `postal_code`, `country`, `last_updated_at`
+- When the address changes, the old one is overwritten.  
+- Pros: Simple, easy to query current address.  
+- Cons: No address history is kept.
+
+Option 2 – Retain address history (Type 2 Slowly Changing Dimension)**  
+This design keeps every past address with start and end dates.  
+- Example table:
+  - `customer_address_id`, `customer_id`, `street`, `city`, `region`, `postal_code`, `country`,  
+    `effective_start_date`, `effective_end_date` (NULL = current), `is_current`
+- When a customer moves, we insert a new row and close the old one by setting its end date.  
+- Pros: Preserves full history for audits or time-based analysis.  
+- Cons: More complex queries and larger storage.
+
+Summary:
+Type 1 = overwrite (current-only)  
+Type 2 = retain history (time-stamped versions)
+
 
 ***
 
@@ -185,3 +232,14 @@ Consider, for example, concepts of labour, bias, LLM proliferation, moderating c
 ```
 Your thoughts...
 ```
+
+Vicki Boykis’s essay “Neural nets are just people all the way down” really made me stop and think about how artificial intelligence is built. We often imagine AI as something mechanical, almost magical, running on pure code and computation. But what Boykis shows is that behind every “smart” system there are real people doing quiet, repetitive, and often underpaid work. It made me realize that AI is not really automated at all. It is powered by countless hours of human labour, judgment, and sometimes bias.
+
+One of the main ethical issues in this story is the invisibility of that human labour. Boykis explains how early language and image databases like the Brown Corpus, WordNet, and ImageNet were all created by people who spent endless hours tagging and organizing data. Many of them were graduate students or crowdworkers paid only a few cents per task through platforms like Amazon Mechanical Turk. Their work makes modern AI possible, yet their names are rarely mentioned. I find this troubling, because it mirrors other kinds of global inequality where the people who build the foundations of a system are hidden and undervalued.
+
+Another major issue is bias. Every dataset reflects the choices, culture, and limitations of the people who created it. Boykis points out how ImageNet once labeled people with words like “orphan” or “criminal,” showing how social stereotypes can end up inside the algorithms that shape our world. When these systems are used for things like facial recognition or automated decision making, those biases can turn into real harm. It made me think about how “objectivity” in technology is often an illusion, because humans define what the data means in the first place.
+
+The essay also made me question the idea of automation itself. We often talk about AI as if it were independent, learning on its own. But Boykis shows that at every step, humans are still guiding, labeling, and correcting. Calling it “machine learning” hides who is actually doing the work and who is responsible when something goes wrong. Recognizing that there are people “all the way down” forces us to think about ethics not as a side topic, but as something built into the very structure of technology.
+
+What stayed with me most is Boykis’s comparison to sewing. Just like sewing still relies on human intuition, AI also relies on the creativity and care of people. Her essay reminds me that progress in technology should never come at the cost of fairness or visibility. True innovation begins by valuing the human effort that makes it all possible.
+
